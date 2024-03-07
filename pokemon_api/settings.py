@@ -41,8 +41,8 @@ class Settings(BaseSettings):
     # Variables for the database
     db_host: str = "localhost"
     db_port: int = 5432
-    db_user: str = "pokemon_api"
-    db_pass: str = "pokemon_api"
+    db_user: str = "ashwinpradhan"
+    db_pass: str = "ashwinpradhan"
     db_base: str = "pokemon_api"
     db_echo: bool = False
 

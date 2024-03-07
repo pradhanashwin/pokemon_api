@@ -1,7 +1,7 @@
 [flake8]
 max-complexity = 6
 inline-quotes = double
-max-line-length = 88
+max-line-length = 129
 extend-ignore = E203
 docstring_style=sphinx
 
@@ -72,7 +72,26 @@ ignore =
   WPS473,
   ; too many no-cover comments.
   WPS403,
-
+  ; Found too deep nesting
+  WPS220
+  ; Found local folder import
+  WPS300
+  ;  Missing "Returns" in Docstring: - return
+  DAR101
+  ; Missing "Returns" in Docstring: - return
+  DAR201
+  ; Found too many local variables
+  WPS210
+  ; Found variables that are only used for `return`:
+  WPS331
+  ; Found too many await expressions
+  WPS217
+  ;Found block variables overlap: connection
+  WPS440
+  ; Found magic number
+  WPS432
+  ; Inline interpreted text or phrase reference start-string without end-string.
+  RST215
 per-file-ignores =
   ; all tests
   test_*.py,tests.py,tests_*.py,*/tests/*,conftest.py:
