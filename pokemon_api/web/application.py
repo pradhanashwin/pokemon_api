@@ -3,7 +3,7 @@ from importlib import metadata
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
 
-from pokemon_api.web.api.router import api_router
+from pokemon_api.web.api.v1.router import api_router
 from pokemon_api.web.lifetime import register_shutdown_event, register_startup_event
 
 
@@ -29,6 +29,8 @@ def get_app() -> FastAPI:
     register_shutdown_event(app)
 
     # Main router for the API.
-    app.include_router(router=api_router, prefix="/api")
+    app.include_router(router=api_router, prefix="/api/v1")
+    # After creating new version of APIs simply add like this
+    # app.include_router(router=api_router, prefix="/api/v2") # noqa E800
 
     return app
