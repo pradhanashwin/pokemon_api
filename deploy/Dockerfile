@@ -14,7 +14,7 @@ COPY pyproject.toml poetry.lock /app/src/
 WORKDIR /app/src
 
 # Installing requirements
-RUN poetry install --only main
+RUN poetry install
 # Removing gcc
 RUN apt-get purge -y \
   gcc \
@@ -22,7 +22,7 @@ RUN apt-get purge -y \
 
 # Copying actuall application
 COPY . /app/src/
-RUN poetry install --only main
+RUN poetry install
 
 CMD ["/usr/local/bin/python", "-m", "pokemon_api"]
 
