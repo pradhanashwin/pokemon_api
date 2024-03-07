@@ -1,3 +1,4 @@
+import asyncio
 import random
 from typing import Awaitable, Callable
 
@@ -174,7 +175,7 @@ async def populate_database(engine) -> None:
     """
     async with engine.begin():
         async with httpx.AsyncClient() as client:
-            poke_url = f"{POKEAPI_BASE_URL}/pokemon?limit=150"
+            poke_url = f"{POKEAPI_BASE_URL}/pokemon?limit=500"
             # This function will fetch the pokemon data from the pokemon and save it to the database. # noqa
             while poke_url:
                 response = await client.get(poke_url)
@@ -187,11 +188,16 @@ async def populate_database(engine) -> None:
                         detail_data = detail_response.json()
                         species_detail = await client.get(detail_data["species"]["url"])
                         species_data = species_detail.json()
+                        # Merge dictionary of responses
                         complete_detail = {**detail_data, **species_data}
                         # Save the pokemon data to the database.
                         if detail_data:
                             await save_pokemon(complete_detail, session)
                 poke_url = data.get("next")
+                # Introduce a delay of 1 second between requests
+                await asyncio.sleep(1)
+                # TODO: make api call more efficient because the pokeapi throttles the response after 500 requests
+                # for now  ending the loop. remove poke_url = False to run code until response is empty
                 poke_url = False
 
 
