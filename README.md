@@ -68,8 +68,9 @@ pokemon_api
 
 This application can be configured with environment variables.
 
-You can create `.env` file in the root directory and place all
-environment variables here.
+You can create `.env` file in the root directory or rename
+`example.env` to `.env` and place all
+environment variables here
 
 All environment variables should start with "POKEMON_API_" prefix.
 
@@ -99,7 +100,6 @@ It's configured using .pre-commit-config.yaml file.
 
 By default it runs:
 * black (formats your code);
-* mypy (validates types);
 * isort (sorts imports in all files);
 * flake8 (spots possible bugs);
 

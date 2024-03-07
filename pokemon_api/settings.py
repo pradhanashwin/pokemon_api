@@ -39,12 +39,12 @@ class Settings(BaseSettings):
 
     log_level: LogLevel = LogLevel.INFO
     # Variables for the database
-    db_host: str = "localhost"
-    db_port: int = 5432
-    db_user: str = "ashwinpradhan"
-    db_pass: str = "ashwinpradhan"
-    db_base: str = "pokemon_api"
-    db_echo: bool = False
+    db_host: str
+    db_port: int
+    db_user: str
+    db_pass: str
+    db_base: str
+    db_echo: bool
 
     @property
     def db_url(self) -> URL:
