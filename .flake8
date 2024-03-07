@@ -92,6 +92,8 @@ ignore =
   WPS432
   ; Inline interpreted text or phrase reference start-string without end-string.
   RST215
+  ; Missing exception(s) in Raises section: -r HTTPException
+  DAR401
 per-file-ignores =
   ; all tests
   test_*.py,tests.py,tests_*.py,*/tests/*,conftest.py:

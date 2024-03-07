@@ -27,21 +27,21 @@ async def get_type(type_data: list, session: AsyncSession) -> tuple:
     type_instances = []
     # async with session.begin():
     # Find the Type instance with the given name in the type_data.
-    for type_name in type_data:
-        # Query the database to find the Type with the given name
-        type_instance = await session.execute(
-            select(PokeType).filter_by(name=type_name),
-        )
-        type_instance = type_instance.scalars().first()
-        # Create a new Type instance and add it to the database
-        if type_instance is None:
-            # If type not found, create a new Type instance and add it to the database
-            type_instance = PokeType(name=type_name)
-            session.add(type_instance)
-        type_ids.append(type_instance.id)
-        type_instances.append(type_instance)
-    await session.commit()  # Commit all changes made within the transaction
-
+    async with session.begin():
+        for type_name in type_data:
+            # Query the database to find the Type with the given name
+            type_instance = await session.execute(
+                select(PokeType).filter_by(name=type_name),
+            )
+            type_instance = type_instance.scalars().first()
+            # Create a new Type instance and add it to the database
+            if type_instance is None:
+                # If type not found, create a new Type instance and add it to the database
+                type_instance = PokeType(name=type_name)
+                session.add(type_instance)
+            type_ids.append(type_instance.id)
+            type_instances.append(type_instance)
+        await session.commit()  # Commit all changes made within the transaction
     return type_ids, type_instances
 
 
@@ -52,41 +52,26 @@ async def save_pokemon(response: dict, session: AsyncSession) -> None:
     @param response - The response from the API
     @param session - The session to use for the database operations ( if any
     """
-    async with session.begin():
-        pokemon_id = response["id"]
-        name = response["name"]
-        types = [typ["type"]["name"] for typ in response["types"]]
-        # Find the PokeType with the given name in the database.
-        for type_name in types:
-            # Query the database to find the Type with the given name
-            type_instance = await session.execute(
-                select(PokeType).filter_by(name=type_name),
-            )
-            type_instance = type_instance.scalars().first()
-            type_ids = []
-            type_instances = []
-            # Create a new Type instance and add it to the database
-            if type_instance is None:
-                # If type not found, create a new Type instance and add it to the database
-                type_instance = PokeType(name=type_name)
-                session.add(type_instance)
-            type_ids.append(type_instance.id)
-            type_instances.append(type_instance)
+    pokemon_id = response["id"]
+    name = response["name"]
+    types = [typ["type"]["name"] for typ in response["types"]]
+    # Find the PokeType with the given name in the database.
+    type_ids, type_instances = await get_type(types, session)
 
-        images = {
-            "front_default": response["sprites"]["front_default"],
-            "back_default": response["sprites"]["back_default"],
-        }
+    images = {
+        "front_default": response["sprites"]["front_default"],
+        "back_default": response["sprites"]["back_default"],
+    }
 
-        # Create a new Pokemon instance and add it to the database
-        new_pokemon = Pokemon(
-            id=pokemon_id,
-            name=name,
-            images=images,
-        )
-        # Associate types with the new Pokemon instance
-        new_pokemon.types = type_instances
-        session.add(new_pokemon)
+    # Create a new Pokemon instance and add it to the database
+    new_pokemon = Pokemon(
+        id=pokemon_id,
+        name=name,
+        images=images,
+    )
+    # Associate types with the new Pokemon instance
+    new_pokemon.types = type_instances
+    session.add(new_pokemon)
     await session.commit()  # Commit changes made within the transaction
 
 
@@ -98,7 +83,7 @@ async def populate_database(engine) -> None:
     """
     async with engine.begin():
         async with httpx.AsyncClient() as client:
-            poke_url = f"{POKEAPI_URL}?limit=5"
+            poke_url = f"{POKEAPI_URL}?limit=15"
             # This function will fetch the pokemon data from the pokemon and save it to the database. # noqa
             while poke_url:
                 response = await client.get(poke_url)
