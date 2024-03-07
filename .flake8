@@ -94,6 +94,8 @@ ignore =
   RST215
   ; Missing exception(s) in Raises section: -r HTTPException
   DAR401
+  ; comparison to True should be 'if cond is True:' or 'if cond:'
+  E712
 per-file-ignores =
   ; all tests
   test_*.py,tests.py,tests_*.py,*/tests/*,conftest.py:
